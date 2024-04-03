@@ -1,5 +1,19 @@
 # microfrontend-react
 
-npm install
+## First:
+Go to remote app,
 
-npm start
+install all the packages
+### npm install
+
+run the application (http://localhost:8083/)
+### npm start
+
+## Second:
+Go to remote app,
+
+install all the packages
+### npm install
+
+run the application (http://localhost:8082)
+### npm start
