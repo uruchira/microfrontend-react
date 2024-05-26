@@ -5,7 +5,7 @@ const deps = require("./package.json").dependencies;
 
 module.exports = {
   output: {
-    publicPath: "http://localhost:8080/",
+    publicPath: "http://localhost:8081/",
   },
 
   resolve: {
@@ -13,7 +13,7 @@ module.exports = {
   },
 
   devServer: {
-    port: 8080,
+    port: 8081,
     historyApiFallback: true,
     headers: {
       "Access-Control-Allow-Origin": "*",
@@ -49,7 +49,7 @@ module.exports = {
       template: "./public/index.html",
     }),
     new ModuleFederationPlugin({
-      name: "home",
+      name: "auth",
       filename: "remoteEntry.js",
       remotes: {
         home: "home@http://localhost:8080/remoteEntry.js",
@@ -57,7 +57,7 @@ module.exports = {
         dashboard: "dashboard@http://localhost:8082/remoteEntry.js",
       },
       exposes: {
-        "./Layout": "./src/Layout.jsx",
+        "./LoginContent": "./src/Login.jsx",
       },
       shared: {
         ...deps,

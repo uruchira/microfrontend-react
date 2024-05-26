@@ -1,18 +1,39 @@
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const ModuleFederationPlugin = require("webpack/lib/container/ModuleFederationPlugin");
-const path = require("path");
+
+const deps = require("./package.json").dependencies;
 
 module.exports = {
-  mode: "development",
-  devServer: {
-    port: 8083,
-  },
-  entry: "./src/index.js",
   output: {
-    filename: "bundle.js",
+    publicPath: "http://localhost:8082/",
   },
+
+  resolve: {
+    extensions: [".jsx", ".js", ".json"],
+  },
+
+  devServer: {
+    port: 8082,
+    historyApiFallback: true,
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+    },
+    open: false,
+  },
+
   module: {
     rules: [
+      {
+        test: /\.m?js/,
+        type: "javascript/auto",
+        resolve: {
+          fullySpecified: false,
+        },
+      },
+      {
+        test: /\.(css|s[ac]ss)$/i,
+        use: ["style-loader", "css-loader", "postcss-loader"],
+      },
       {
         test: /\.(js|jsx)$/,
         exclude: /node_modules/,
@@ -20,28 +41,34 @@ module.exports = {
           loader: "babel-loader",
         },
       },
-      {
-        test: /\.css$/,
-        use: ["style-loader", "css-loader"],
-      },
-      {
-        test: /\.scss$/,
-        use: ["style-loader", "css-loader", "sass-loader"],
-      },
     ],
   },
-  resolve: {
-    extensions: [".js", ".jsx"],
-  },
+
   plugins: [
     new HtmlWebpackPlugin({
       template: "./public/index.html",
     }),
     new ModuleFederationPlugin({
-      name: "MFE1",
+      name: "dashboard",
       filename: "remoteEntry.js",
+      remotes: {
+        home: "home@http://localhost:8080/remoteEntry.js",
+        auth: "auth@http://localhost:8081/remoteEntry.js",
+        dashboard: "dashboard@http://localhost:8082/remoteEntry.js",
+      },
       exposes: {
-        "./Button": "./src/Button",
+        "./DashboardContent": "./src/Dashboard.jsx",
+      },
+      shared: {
+        ...deps,
+        react: {
+          singleton: true,
+          requiredVersion: deps.react,
+        },
+        "react-dom": {
+          singleton: true,
+          requiredVersion: deps["react-dom"],
+        },
       },
     }),
   ],
