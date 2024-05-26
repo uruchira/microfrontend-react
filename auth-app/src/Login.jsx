@@ -1,10 +1,10 @@
 import React from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
 
-  return <button onClick={() => history.push("/dashboard")}>Login</button>;
+  return <button onClick={() => navigate("/dashboard")}>Login</button>;
 };
 
 export default Login;
